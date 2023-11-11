@@ -1,6 +1,20 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const path = require("path");
 const Plato = require("../schema/platos");
+
+// Configurar multer para manejar la carga de archivos
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "../imagenes/platos/"); // Directorio donde se guardarán las imágenes de platos
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
 
 router.get("/", async (req, res) => {
   try {
@@ -12,7 +26,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", upload.single("imagen"), async (req, res) => {
   if (!req.body.titulo) {
     //return res.status(400).json({ error: "Título es obligatorio" });
     return res.status(409).json(
@@ -37,7 +51,14 @@ router.post("/", async (req, res) => {
       const plato = new Plato({
         nombre: req.body.nombre,
         descripcion: req.body.descripcion,
-        id_user: req.user.id
+        cocina_regional: req.body.cocina_regional,
+        tipo_cocina: req.body.tipo_cocina,
+        especialidades_ingredientes: req.body.especialidades_ingredientes,
+        tecnicas: req.body.tecnicas,
+        tipo_plato: req.body.tipo_plato,
+        precio: req.body.precio,
+        imagen: req.file ? req.file.filename : "", // Guarda el nombre del archivo en la base de datos
+        id_user: req.user.id,
       });
   
       const platoInfo = await plato.save();
