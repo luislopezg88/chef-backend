@@ -1,8 +1,8 @@
 const express = require("express");
 const { jsonResponse } = require("../lib/jsonResponse");
-const log = require("../lib/trace");
+
 const router = express.Router();
-const Chef = require("../schema/chefs");
+const ChefModel = require("../schema/chefs");
 
 router.get("/", async (req, res) => {
   try {
@@ -14,56 +14,14 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  if (!req.body.nombre) {
-    //return res.status(400).json({ error: "El nombre es obligatorio" });
-    return res.status(409).json(
-      jsonResponse(409, {
-        error: "El nombre es obligatorio",
-      })
-    );
-  }
-
-  try {
-    const chef = new Chef();
-    const chefExists = await chef.nameExists(req.body.titulo);
-
-    if (chefExists) {
-      return res.status(409).json(
-        jsonResponse(409, {
-          error: "Chef ya existe",
-        })
-      );
-      //return next(new Error("Licitación ya existe"));
-    } else {
-      const chef = new Chef({
-        id_user: req.user.id,
-        nombre: req.body.nombre
-      });
-  
-      const chefInfo = await chef.save();
-      //console.log({ chefInfo });
-      //res.json(chefInfo);
-      res.json(
-        jsonResponse(200, {
-          chefInfo
-        })
-      );
-    }
-  } catch (error) {
-    //console.log(error);
-    res.status(500).json({ error: "Error al crear la chef" });
-  }
-});
-
 router.get("/:id", async function (req, res) {
   const id = req.params.id;
   try {
-    const chef = await Chef.findOne({ id }).populate('user');
+    const data = await ChefModel.findOne({ id_user: id });
 
     res.json(
       jsonResponse(200, {
-        chef,
+        data,
       })
     );
   } catch (err) {
@@ -75,11 +33,77 @@ router.get("/:id", async function (req, res) {
   }
 });
 
+router.put("/:id", async function (req, res) {
+  const {
+    nombre,
+    sexo,
+    edad,
+    foto,
+    telefono,
+    ubicacion,
+    experiencialaboral,
+    educacionculinaria,
+    disponibilidad,
+    especialidadesculinarias,
+    habilidadesadicionales,
+    redessociales,
+    historialpuntuaciones,
+  } = req.body;
+  const id = req.params.id;
+
+  try {
+    const exists = await ChefModel.exists({ _id: id });
+
+    if (!exists) {
+      return res.status(404).json({
+        error: "El chef no existe",
+      });
+    }
+
+    const result = await ChefModel.updateOne(
+      { _id: id },
+      {
+        $set: {
+          nombre,
+          sexo,
+          edad,
+          foto,
+          telefono,
+          ubicacion,
+          experiencialaboral,
+          educacionculinaria,
+          disponibilidad,
+          especialidadesculinarias,
+          habilidadesadicionales,
+          redessociales,
+          historialpuntuaciones,
+        },
+      }
+    );
+
+    if (result.matchedCount > 0) {
+      return res.status(200).json({
+        message: `Chef actualizado con éxito, matched:${result.matchedCount}.`,
+      });
+    } else {
+      return res.status(500).json({
+        error:
+          "Chef no encontrado o los datos son iguales, no se realizó ninguna actualización",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: "Error al actualizar el chef",
+    });
+  }
+});
+
 router.post("/save/:id", async function (req, res, next) {
   const id = req.params.id;
   const { nombre } = req.body;
   try {
-    const chef = await Chef.findOne({ id })
+    const chef = await Chef.findOne({ id });
     if (!chef) {
       const nuevoChef = new Chef({ nombre, user });
       await nuevoChef.save();

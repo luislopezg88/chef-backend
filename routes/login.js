@@ -1,44 +1,42 @@
 const express = require("express");
-const User = require("../schema/user");
+const UserModel = require("../schema/user");
 const { jsonResponse } = require("../lib/jsonResponse");
 const getUserInfo = require("../lib/getUserInfo");
 
 const router = express.Router();
 
-router.post("/", async function (req, res, next) {
-  const { email, password } = req.body;
+router.post("/", async function (req, res) {
+  const { correo: email, clave: password } = req.body;
   try {
-    let user = new User();
+    let user = new UserModel();
+    //Existe usuario
     const userExists = await user.usernameExists(email);
     if (userExists) {
-      user = await User.findOne({ email: email });
+      user = await UserModel.findOne({ email: email });
+      //Verficar contraseña
       const passwordCorrect = await user.isCorrectPassword(
         password,
         user.password
       );
 
       if (passwordCorrect) {
-        const accessToken = user.createAccessToken();
-        const refreshToken = await user.createRefreshToken();
-
         return res.json(
           jsonResponse(200, {
-            accessToken,
-            refreshToken,
+            accessToken: "dsd96585dfd54",
             user: getUserInfo(user),
           })
         );
       } else {
         return res.status(401).json(
           jsonResponse(401, {
-            error: "email y/o clave incorrecta",
+            error: "Email y/o clave incorrecta",
           })
         );
       }
     } else {
       return res.status(401).json(
         jsonResponse(401, {
-          error: "email no existe",
+          error: "Email no existe",
         })
       );
     }

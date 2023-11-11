@@ -1,12 +1,28 @@
 const Mongoose = require("mongoose");
 
-const EmpresaSchema = new Mongoose.Schema({
+const ChefSchema = new Mongoose.Schema({
   id: { type: Object },
-  nombre: { type: String },
-  id_user: { 
+  id_user: {
     type: Mongoose.Schema.Types.ObjectId,
-    ref: 'User' 
-  }
+    ref: "User",
+  },
+  nombre: { type: String },
+  sexo: { type: String },
+  edad: { type: Number },
+  foto: { type: String },
+  telefono: { type: String },
+  ubicacion: { type: String },
+  experiencialaboral: { type: String },
+  educacionculinaria: { type: String },
+  disponibilidad: { type: String },
+  especialidadesculinarias: [{ type: String }],
+  habilidadesadicionales: [{ type: String }],
+  redessociales: [{ type: String }],
+  historialpuntuaciones: [{ type: String }],
 });
 
-module.exports = Mongoose.model("Empresas", EmpresaSchema);
+ChefSchema.methods.chefId = async function (id) {
+  const result = await Mongoose.model("chef").find({ _id: id });
+  return result.length > 0;
+};
+module.exports = Mongoose.model("chef", ChefSchema);

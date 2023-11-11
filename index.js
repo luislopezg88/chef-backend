@@ -19,17 +19,13 @@ async function main() {
   console.log("Conectado a la base de datos");
 }
 
-app.use("/api/signup", require("./routes/signup"));
 app.use("/api/login", require("./routes/login"));
+app.use("/api/signup", require("./routes/signup"));
 app.use("/api/signout", require("./routes/logout"));
-app.use("/api/chefs", require("./routes/chefs"));
+app.use("/api/chef", require("./routes/chefs"));
 app.use("/api/platos", require("./routes/platos"));
-
-// Ruta para renovar el token de acceso utilizando el token de actualización
+// Ruta para renovar el
 app.use("/api/refresh-token", require("./routes/refreshToken"));
-
-// Ruta protegida que requiere autenticación
-app.use("/api/user", require("./routes/user"));
 
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
