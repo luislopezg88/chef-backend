@@ -24,6 +24,8 @@ app.use("/api/signup", require("./routes/signup"));
 app.use("/api/signout", require("./routes/logout"));
 app.use("/api/chef", require("./routes/chefs"));
 app.use("/api/platos", require("./routes/platos"));
+app.use("/api/dashboard", require("./routes/dashboard"));
+app.use("/api/carrito", require("./routes/carrito"));
 // Ruta para renovar el
 app.use("/api/refresh-token", require("./routes/refreshToken"));
 
