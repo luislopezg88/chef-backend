@@ -32,7 +32,8 @@ router.post('/guardar', async (req, res) => {
       // Iterar sobre la lista de platos y guardarlos en la base de datos
       for (const plato of listaPlatos) {
         const nuevoPlato = new PlatosVendidos({
-          id_plato: plato.id_plato,
+          id_plato: plato._id,
+          id_chef: plato.id_chef,
           cantidad: plato.cantidad
         });
         await nuevoPlato.save();
