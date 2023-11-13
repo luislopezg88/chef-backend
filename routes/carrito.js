@@ -28,9 +28,12 @@ router.get("/chef/:id", async function (req, res) {
 router.post("/", async (req, res) => {
   try {
     const listaPlatos = req.body.listaPlatos;
+
+    // Iterar sobre la lista de platos y guardarlos en la base de datos
     for (const plato of listaPlatos) {
       const nuevoPlato = new PlatosVendidos({
-        id_plato: plato.id_plato,
+        id_plato: plato._id,
+        id_chef: plato.id_chef,
         cantidad: plato.cantidad,
       });
       await nuevoPlato.save();
@@ -39,7 +42,7 @@ router.post("/", async (req, res) => {
     res
       .status(200)
       .json({ mensaje: "Lista de platos vendidos guardada exitosamente" });
-  } catch (error) {
+  } catch (ersror) {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });

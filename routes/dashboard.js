@@ -34,4 +34,23 @@ router.get("/chef/:id", async function (req, res) {
   }
 });
 
+// Ruta para Platos más vendidos
+router.get("/platosMasVendidos", async (req, res) => {
+    const resultados = await PlatosVendidosSchema.obtenerPlatosMasVendidos();
+    res.json(resultados);
+});
+  
+// Ruta para Platos más vendidos del chef
+router.get("/platosMasVendidos/:id_chef", async (req, res) => {
+    const { id_chef } = req.params;
+    const resultados = await PlatosVendidosSchema.obtenerPlatosMasVendidos(id_chef);
+    res.json(resultados);
+});
+  
+// Ruta para Chef con más ventas
+router.get("/chefMasVentas", async (req, res) => {
+    const resultados = await PlatosVendidosSchema.obtenerChefMasVentas();
+    res.json(resultados);
+});
+
 module.exports = router;
