@@ -25,24 +25,23 @@ router.get("/chef/:id", async function (req, res) {
 });
 
 // Ruta para guardar la lista de platos vendidos
-router.post('/guardar', async (req, res) => {
-    try {
-      const listaPlatos = req.body.listaPlatos;
-  
-      // Iterar sobre la lista de platos y guardarlos en la base de datos
-      for (const plato of listaPlatos) {
-        const nuevoPlato = new PlatosVendidos({
-          id_plato: plato.id_plato,
-          cantidad: plato.cantidad
-        });
-        await nuevoPlato.save();
-      }
-  
-      res.status(200).json({ mensaje: 'Lista de platos vendidos guardada exitosamente' });
-    } catch (error) {
-      console.error('Error al guardar la lista de platos vendidos:', error);
-      res.status(500).json({ error: 'Error interno del servidor' });
+router.post("/", async (req, res) => {
+  try {
+    const listaPlatos = req.body.listaPlatos;
+    for (const plato of listaPlatos) {
+      const nuevoPlato = new PlatosVendidos({
+        id_plato: plato.id_plato,
+        cantidad: plato.cantidad,
+      });
+      await nuevoPlato.save();
     }
+
+    res
+      .status(200)
+      .json({ mensaje: "Lista de platos vendidos guardada exitosamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
 });
 
 module.exports = router;
