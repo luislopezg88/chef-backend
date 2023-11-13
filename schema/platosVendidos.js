@@ -6,7 +6,8 @@ const PlatosVendidosSchema = new Mongoose.Schema({
     type: Mongoose.Schema.Types.ObjectId,
     ref: "plato",
   },
-  fecha: { type: Date }
+  cantidad: { type: Number },
+  fecha: { type: Date, default: Date.now }
 });
 
 PlatosVendidosSchema.statics.dashboard = async function (id_plato, id_chef, fecha) {
