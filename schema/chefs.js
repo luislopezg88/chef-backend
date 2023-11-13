@@ -21,8 +21,9 @@ const ChefSchema = new Mongoose.Schema({
   historialpuntuaciones: [{ type: String }],
 });
 
-ChefSchema.methods.chefId = async function (id) {
-  const result = await Mongoose.model("chef").find({ _id: id });
-  return result.length > 0;
+ChefSchema.statics.existsById = async function (chefId) {
+  const chefCount = await this.countDocuments({ _id: chefId });
+  return chefCount > 0;
 };
+
 module.exports = Mongoose.model("chef", ChefSchema);

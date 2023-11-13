@@ -1,15 +1,18 @@
 const express = require("express");
 const { jsonResponse } = require("../lib/jsonResponse");
-
-const router = express.Router();
 const ChefModel = require("../schema/chefs");
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const items = await Chef.find({ id_user: req.user.id });
-    return res.json(items);
+    const data = await ChefModel.find();
+    return res.json(
+      jsonResponse(200, {
+        data,
+        recordsTotal: data.length,
+      })
+    );
   } catch (error) {
-    //console.log(error);
     return res.status(500).json({ error: "Error al obtener los todos" });
   }
 });
@@ -52,7 +55,8 @@ router.put("/:id", async function (req, res) {
   const id = req.params.id;
 
   try {
-    const exists = await ChefModel.exists({ _id: id });
+    //const exists = await ChefModel.exists({ _id: id });
+    const exists = await ChefModel.existsById(id);
 
     if (!exists) {
       return res.status(404).json({
@@ -96,38 +100,6 @@ router.put("/:id", async function (req, res) {
     return res.status(500).json({
       error: "Error al actualizar el chef",
     });
-  }
-});
-
-router.post("/save/:id", async function (req, res, next) {
-  const id = req.params.id;
-  const { nombre } = req.body;
-  try {
-    const chef = await Chef.findOne({ id });
-    if (!chef) {
-      const nuevoChef = new Chef({ nombre, user });
-      await nuevoChef.save();
-      res.json(
-        jsonResponse(200, {
-          message: "Chef actualizado satisfactoriamente",
-        })
-      );
-    } else {
-      chef.nombre = nombre;
-      await chef.save();
-      res.json(
-        jsonResponse(200, {
-          message: "Chef actualizado satisfactoriamente",
-        })
-      );
-    }
-  } catch (err) {
-    //console.log(err)
-    return res.status(500).json(
-      jsonResponse(500, {
-        error: "Error creando el chef",
-      })
-    );
   }
 });
 
