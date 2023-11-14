@@ -4,13 +4,9 @@ const { jsonResponse } = require("../lib/jsonResponse");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  try {
-    const items = await PlatosVendidosSchema.dashboard({ id_user: req.user.id });
-    return res.json(items);
-  } catch (error) {
-    //console.log(error);
-    return res.status(500).json({ error: "Error al obtener los todos" });
-  }
+    return 'hola';
+    //const resultados = await PlatosVendidosSchema.obtenerPlatosMasVendidos();
+    //res.json(resultados);
 });
 
 router.get("/chef/:id", async function (req, res) {
@@ -35,21 +31,21 @@ router.get("/chef/:id", async function (req, res) {
 });
 
 // Ruta para Platos más vendidos
-router.get("/platosMasVendidos", async (req, res) => {
-    const resultados = await PlatosVendidosSchema.obtenerPlatosMasVendidos();
+router.get("/platosVendidos", async (req, res) => {
+    const resultados = await PlatosVendidosSchema.obtenerPlatosVendidos();
     res.json(resultados);
 });
   
 // Ruta para Platos más vendidos del chef
-router.get("/platosMasVendidos/:id_chef", async (req, res) => {
+router.get("/platosVendidos/:id_chef", async (req, res) => {
     const { id_chef } = req.params;
-    const resultados = await PlatosVendidosSchema.obtenerPlatosMasVendidos(id_chef);
+    const resultados = await PlatosVendidosSchema.obtenerPlatosVendidos(id_chef);
     res.json(resultados);
 });
   
 // Ruta para Chef con más ventas
-router.get("/chefMasVentas", async (req, res) => {
-    const resultados = await PlatosVendidosSchema.obtenerChefMasVentas();
+router.get("/ventasPorChef", async (req, res) => {
+    const resultados = await PlatosVendidosSchema.obtenerVentasPorChef();
     res.json(resultados);
 });
 
