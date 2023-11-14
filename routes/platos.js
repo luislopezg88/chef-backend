@@ -3,18 +3,16 @@ const multer = require("multer");
 const path = require("path");
 const PlatoSchema = require("../schema/platos");
 const { jsonResponse } = require("../lib/jsonResponse");
-
 const router = express.Router();
+
 // Configurar multer carga de archivos
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../imagenes/platos/"); // Directorio donde se guardarán las imágenes de platos
+    cb(null, "imagenes/platos/"); // Directorio donde se guardarán las imágenes de platos
   },
   filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
+    const nombreArchivo = req.body.imagen; // + path.extname(file.originalname);
+    cb(null, nombreArchivo);
   },
 });
 
