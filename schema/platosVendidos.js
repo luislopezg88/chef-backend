@@ -14,10 +14,10 @@ const PlatosVendidosSchema = new Mongoose.Schema({
   fecha: { type: Date, default: Date.now }
 });
 
-PlatosVendidosSchema.statics.obtenerPlatosMasVendidos = async function (id_chef) {
+PlatosVendidosSchema.statics.obtenerPlatosVendidos = async function (id_chef) {
     const matchStage = {
       $match: {
-        id_chef: id_chef ? mongoose.Types.ObjectId(id_chef) : { $exists: true },
+        id_chef: id_chef ? new Mongoose.Types.ObjectId(id_chef) : { $exists: true },
       },
     };
   
@@ -65,6 +65,37 @@ PlatosVendidosSchema.statics.obtenerPlatosMasVendidos = async function (id_chef)
     ]);
   
     return resultados;
-};  
+};
+
+PlatosVendidosSchema.statics.obtenerVentasPorChef = async function () {
+    const resultados = await this.aggregate([
+        {
+            $group: {
+                _id: "$id_chef",
+                totalVentas: { $sum: "$cantidad" },
+            },
+        },
+        {
+            $lookup: {
+                from: "chefs", // Ajusta según el nombre de tu colección de chefs
+                localField: "_id",
+                foreignField: "_id",
+                as: "chef",
+            },
+        },
+        {
+            $unwind: "$chef",
+        },
+        {
+            $project: {
+                _id: 0,
+                nombreChef: "$chef.nombre",
+                totalVentas: 1,
+            },
+        },
+    ]);
+
+    return resultados;
+};
 
 module.exports = Mongoose.model("PlatosVendidos", PlatosVendidosSchema);
