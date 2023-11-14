@@ -50,7 +50,7 @@ router.get("/chef/:id", async function (req, res) {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", upload.single("file"), async (req, res) => {
   const {
     idChef,
     nombre,
@@ -104,7 +104,6 @@ router.post("/", async (req, res) => {
       );
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Error al crear el plato" });
   }
 });
