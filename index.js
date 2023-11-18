@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const app = express();
 const mongoose = require("mongoose");
 const authenticateToken = require("./auth/authenticateToken");
@@ -26,8 +27,11 @@ app.use("/api/chef", require("./routes/chefs"));
 app.use("/api/platos", require("./routes/platos"));
 app.use("/api/dashboard", require("./routes/dashboard"));
 app.use("/api/carrito", require("./routes/carrito"));
-// Ruta para renovar el
-app.use("/api/refresh-token", require("./routes/refreshToken"));
+// Ruta imagenes
+/*app.use(
+  "/imagenes/platos",
+  express.static(path.join(__dirname, "..", "imagenes", "platos"))
+);*/
 
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
