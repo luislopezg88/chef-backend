@@ -6,13 +6,22 @@ const getUserInfo = require("../lib/getUserInfo");
 const router = express.Router();
 
 router.post("/", async function (req, res) {
-  const { correo: email, clave: password } = req.body;
+  const { correo: email, clave: password, rol } = req.body;
+
   try {
     let user = new UserModel();
     //Existe usuario
     const userExists = await user.usernameExists(email);
     if (userExists) {
-      user = await UserModel.findOne({ email: email });
+      user = await UserModel.findOne({ email: email, rol: rol });
+      //Existe cuenta y nivel
+      if (user === null) {
+        return res.status(401).json(
+          jsonResponse(401, {
+            error: "Cuenta no existe",
+          })
+        );
+      }
       //Verficar contraseña
       const passwordCorrect = await user.isCorrectPassword(
         password,

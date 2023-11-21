@@ -48,14 +48,3 @@ router.post("/", async (req, res) => {
 });
 
 module.exports = router;
-/*
-como puedo mandar a cargar la imágenes desde un frontend en react y el backend con node  en mi directorio raiz del backend tengo una carpeta que se llama imagenes:
-
-chef - backend;
---lib;
---node_module;
---routes;
---schema;
-index.js;
-
-*/

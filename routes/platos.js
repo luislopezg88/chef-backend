@@ -110,7 +110,6 @@ router.get("/imagen/:img", function (req, res) {
   const img = req.params.img;
   const fileName = encodeURIComponent(img);
   const filePath = path.join(__dirname, "..", "imagenes", "platos", fileName);
-  console.log(filePath);
   res.sendFile(filePath);
 });
 
