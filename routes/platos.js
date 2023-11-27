@@ -67,6 +67,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     imagen,
     precio,
   } = req.body;
+  console.log(req.body);
 
   if (!nombre) {
     return res.status(409).json(
