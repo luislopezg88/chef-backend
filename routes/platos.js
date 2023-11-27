@@ -16,7 +16,13 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  onError: function (err, next) {
+    console.error("Error en multer:", err);
+    next(err);
+  },
+});
 
 router.get("/", async (req, res) => {
   try {
