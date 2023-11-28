@@ -11,7 +11,8 @@ app.use(express.json());
 app.use(cors());
 const port = process.env.PORT || 3100;
 
-app.use(express.static(path.join(__dirname, 'imagenes/platos')));
+app.use("/api/platos/imagen", express.static(path.join(__dirname, 'imagenes/platos')));
+
 
 main().catch((err) => console.log(err));
 
