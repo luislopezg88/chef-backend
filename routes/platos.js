@@ -4,11 +4,12 @@ const path = require("path");
 const PlatoSchema = require("../schema/platos");
 const { jsonResponse } = require("../lib/jsonResponse");
 const router = express.Router();
+const fs = require('fs');
 
 // Configurar multer carga de archivos
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "imagenes/platos/"); // Directorio donde se guardarán las imágenes de platos
+    cb(null, "imagenes/platos/"); // Directorio donde se guardarán las imágenes de productos
   },
   filename: function (req, file, cb) {
     const nombreArchivo = req.body.imagen; // + path.extname(file.originalname);
@@ -22,6 +23,17 @@ const upload = multer({
     console.error("Error en multer:", err);
     next(err);
   },
+});
+
+router.get("/imagen/:img", function (req, res) {
+  const img = req.params.img;
+  const fileName = encodeURIComponent(img);
+  const filePath = path.join(__dirname, "..", "imagenes", "platos", fileName);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send("Imagen no encontrada");
+  }
 });
 
 router.get("/", async (req, res) => {
@@ -111,13 +123,6 @@ router.post("/", upload.single("file"), async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error al crear el plato" });
   }
-});
-
-router.get("/imagen/:img", function (req, res) {
-  const img = req.params.img;
-  const fileName = encodeURIComponent(img);
-  const filePath = path.join(__dirname, "..", "imagenes", "platos", fileName);
-  res.sendFile(filePath);
 });
 
 module.exports = router;
