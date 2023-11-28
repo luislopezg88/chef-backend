@@ -9,7 +9,7 @@ const fs = require('fs');
 // Configurar multer carga de archivos
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "imagenes/platos/"); // Directorio donde se guardarán las imágenes de productos
+    cb(null, "imagenes/"); // Directorio donde se guardarán las imágenes de productos
   },
   filename: function (req, file, cb) {
     const nombreArchivo = req.body.imagen; // + path.extname(file.originalname);
@@ -17,18 +17,13 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({
-  storage: storage,
-  onError: function (err, next) {
-    console.error("Error en multer:", err);
-    next(err);
-  },
-});
+const upload = multer({ storage: storage });
 
-router.get("/imagen/:img", function (req, res) {
+router.get("/imagenes/:img", function (req, res) {
   const img = req.params.img;
   const fileName = encodeURIComponent(img);
-  const filePath = path.join(__dirname, "..", "imagenes", "platos", fileName);
+  const filePath = path.join(__dirname, "..", "imagenes", fileName);
+
   if (fs.existsSync(filePath)) {
     res.sendFile(filePath);
   } else {
